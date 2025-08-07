@@ -6,7 +6,7 @@ return {
       change = { text = '~' },
       delete = { text = 'x' },
       topdelete = { text = '‾' },
-      changedelete = { text = '~' },
+      changedelete = { text = '~x' },
     },
   },
 }
