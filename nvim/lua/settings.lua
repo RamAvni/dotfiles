@@ -7,11 +7,11 @@ vim.o.relativenumber = true
 vim.o.mouse = 'a'
 vim.o.showmode = false
 vim.o.clipboard = 'unnamedplus'
-vim.o.breakindent = true
 vim.o.confirm = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
+vim.o.shiftwidth = 2
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
