@@ -15,6 +15,10 @@ return {
   },
   config = function()
     require('telescope').setup {
+      defaults = {
+        path_display = { truncate = 12 },
+        layout_config = { preview_cutoff = 10 },
+      },
       extensions = {
         ['ui-select'] = {
           require('telescope.themes').get_dropdown(),
@@ -32,16 +36,18 @@ return {
     vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[F]ind [F]iles' })
     -- vim.keymap.set('n', '<leader>fs', builtin.builtin, { desc = '[F]ind [S]elect Telescope' })
     vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = '[F]ind current [W]ord' })
-    vim.keymap.set('n', '<leader>fs', builtin.live_grep, { desc = '[F]ind by grep' })
+    vim.keymap.set('n', '<leader>fs', builtin.live_grep, { desc = '[F]ind by [S]earch' })
     vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = '[F]ind [D]iagnostics' })
     vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = '[F]ind [R]esume' })
     vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = '[F]ind Recent Files ("." for repeat)' })
     vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = '[F]ind existing [b]uffers' })
+    vim.keymap.set('n', '<leader>fC', function()
+      builtin.colorscheme { enable_preview = true }
+    end, { desc = '[F]ind [C]olor schemes' })
 
     vim.keymap.set('n', '<leader>/', function()
       builtin.grep_string(require('telescope.themes').get_dropdown {
         winblend = 10,
-        previewer = false,
       })
     end, { desc = '[/] Fuzzily search in current buffer' })
 

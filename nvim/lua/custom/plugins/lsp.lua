@@ -30,6 +30,45 @@ return {
     },
     config = function()
       --  This function gets run when an LSP attaches to a particular buffer.
+
+      ---@param text string[]
+      ---@param fileType string
+      local function openCuteWindow(text, fileType)
+        local tempBufId = vim.api.nvim_create_buf(true, true) -- Create a temporary buffer
+        vim.api.nvim_set_option_value('filetype', fileType, { buf = tempBufId })
+        vim.api.nvim_buf_set_lines(tempBufId, 0, -1, true, text)
+        vim.lsp.buf_attach_client(tempBufId, 1) -- Tell the current LSP, it should look on this buffer too
+
+        -- treesitter
+        vim.treesitter.start(tempBufId)
+
+        -- Open a window
+        vim.api.nvim_open_win(tempBufId, true, { border = 'double', height = 8, width = 80, bufpos = { 1, 1 }, relative = 'cursor' })
+      end
+
+      local function callLspHover()
+        local bufId = vim.api.nvim_get_current_buf()
+
+        vim.lsp.buf_request(bufId, 'textDocument/hover', vim.lsp.util.make_position_params(0, 'utf-8'), function(err, result)
+          if err then
+            print 'ERROR! :('
+          elseif result then
+            local fileType = vim.api.nvim_get_option_value('filetype', {})
+            local lspHoverResult = {}
+            for line in string.gmatch(result.contents.value, '[^\n]+') do
+              table.insert(lspHoverResult, line)
+            end
+
+            openCuteWindow(lspHoverResult, fileType)
+          else
+            print 'No Info'
+          end
+        end)
+      end
+
+      local function check()
+        callLspHover()
+      end
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
@@ -48,6 +87,8 @@ return {
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
+          map('grc', check, 'check')
+
           map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
@@ -64,19 +105,19 @@ return {
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
-          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
+          map('gs', require('telescope.builtin').lsp_document_symbols, 'Open Document [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
+          map('gS', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace [S]ymbols')
 
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
@@ -183,7 +224,9 @@ return {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {
+          completeUnimported = false,
+        },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -194,7 +237,6 @@ return {
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
