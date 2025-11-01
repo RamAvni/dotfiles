@@ -31,44 +31,6 @@ return {
     config = function()
       --  This function gets run when an LSP attaches to a particular buffer.
 
-      ---@param text string[]
-      ---@param fileType string
-      local function openCuteWindow(text, fileType)
-        local tempBufId = vim.api.nvim_create_buf(true, true) -- Create a temporary buffer
-        vim.api.nvim_set_option_value('filetype', fileType, { buf = tempBufId })
-        vim.api.nvim_buf_set_lines(tempBufId, 0, -1, true, text)
-        vim.lsp.buf_attach_client(tempBufId, 1) -- Tell the current LSP, it should look on this buffer too
-
-        -- treesitter
-        vim.treesitter.start(tempBufId)
-
-        -- Open a window
-        vim.api.nvim_open_win(tempBufId, true, { border = 'double', height = 8, width = 80, bufpos = { 1, 1 }, relative = 'cursor' })
-      end
-
-      local function callLspHover()
-        local bufId = vim.api.nvim_get_current_buf()
-
-        vim.lsp.buf_request(bufId, 'textDocument/hover', vim.lsp.util.make_position_params(0, 'utf-8'), function(err, result)
-          if err then
-            print 'ERROR! :('
-          elseif result then
-            local fileType = vim.api.nvim_get_option_value('filetype', {})
-            local lspHoverResult = {}
-            for line in string.gmatch(result.contents.value, '[^\n]+') do
-              table.insert(lspHoverResult, line)
-            end
-
-            openCuteWindow(lspHoverResult, fileType)
-          else
-            print 'No Info'
-          end
-        end)
-      end
-
-      local function check()
-        callLspHover()
-      end
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
@@ -86,8 +48,6 @@ return {
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
-
-          map('grc', check, 'check')
 
           map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
 
