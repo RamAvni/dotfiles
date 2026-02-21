@@ -1,0 +1,10 @@
+-- vim.cmd 'set notermguicolors'
+-- vim.cmd 'set background=light'
+-- vim.cmd 'colorscheme vim'
+--
+-- vim.cmd 'TSBufDisable highlight'
+-- vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'NONE' })
+-- vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#FFD700', bg = '#FFD700' })
+-- vim.api.nvim_set_hl(0, 'LineNr', { fg = '#3f3f3f' })
+-- vim.api.nvim_set_hl(0, 'Pmenu', { fg = '#ffffff', bg = 'NONE' })
+-- vim.api.nvim_set_hl(0, 'Statement', { fg = '#E0B892' })

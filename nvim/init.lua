@@ -2,6 +2,7 @@ require 'settings'
 require 'keymaps'
 require 'plugins'
 require 'custom/educationalLsp'
+require 'colorscheme'
 
 -- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd('TextYankPost', {

@@ -10,5 +10,11 @@ return {
     }
 
     vim.cmd.colorscheme 'tokyonight-night'
+
+    -- Custom on top
+    vim.api.nvim_set_hl(0, 'Folded', { fg = '#cdd6f4', bg = '#1e1e2e', link = 'Comment' })
+    -- Set the foreground and background colors for the FoldColumn
+    vim.api.nvim_set_hl(0, 'FoldColumn', { fg = '#cdd6f4', bg = '#1e1e2e' })
   end,
 }
+-- return {}

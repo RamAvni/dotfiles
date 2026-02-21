@@ -38,3 +38,7 @@ vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 8
+
+-- Fold Text
+vim.o.foldtext = ''
+vim.o.fillchars = 'fold: '
